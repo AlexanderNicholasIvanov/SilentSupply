@@ -127,7 +127,7 @@ public class RfqService {
      * @param id the RFQ ID
      * @return the RFQ entity
      */
-    Rfq findRfqOrThrow(Long id) {
+    public Rfq findRfqOrThrow(Long id) {
         return rfqRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("RFQ", "id", id));
     }
