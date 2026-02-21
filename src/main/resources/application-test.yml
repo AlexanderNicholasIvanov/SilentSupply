@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    hikari:
+      data-source-properties:
+        sslmode: disable
+  jpa:
+    show-sql: false
+  flyway:
+    enabled: true
+
+app:
+  jwt:
+    secret: test-secret-key-that-must-be-at-least-256-bits-long-for-hs256-signing-algo
+    expiration-ms: 3600000
+
+logging:
+  level:
+    com.silentsupply: INFO

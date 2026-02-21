@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/silentsupply
+    username: silentsupply
+    password: silentsupply
+  jpa:
+    show-sql: true
+
+logging:
+  level:
+    com.silentsupply: DEBUG
+    org.springframework.security: DEBUG
