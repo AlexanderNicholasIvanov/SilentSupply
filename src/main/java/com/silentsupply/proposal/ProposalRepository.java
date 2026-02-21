@@ -12,10 +12,10 @@ import java.util.List;
 public interface ProposalRepository extends JpaRepository<Proposal, Long> {
 
     /**
-     * Finds all proposals for a given RFQ, ordered by round number.
+     * Finds all proposals for a given RFQ, ordered by round number then by ID.
      *
      * @param rfqId the RFQ ID
-     * @return list of proposals ordered by round
+     * @return list of proposals ordered by round then creation order
      */
-    List<Proposal> findByRfqIdOrderByRoundNumberAsc(Long rfqId);
+    List<Proposal> findByRfqIdOrderByRoundNumberAscIdAsc(Long rfqId);
 }

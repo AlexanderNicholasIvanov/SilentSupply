@@ -3,6 +3,8 @@ package com.silentsupply.proposal;
 import com.silentsupply.common.exception.BusinessRuleException;
 import com.silentsupply.company.Company;
 import com.silentsupply.company.CompanyRole;
+import com.silentsupply.negotiation.NegotiationEngine;
+import com.silentsupply.negotiation.NegotiationRuleRepository;
 import com.silentsupply.product.Product;
 import com.silentsupply.product.ProductStatus;
 import com.silentsupply.proposal.dto.ProposalRequest;
@@ -22,9 +24,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -42,6 +47,10 @@ class ProposalServiceTest {
     private RfqService rfqService;
     @Mock
     private ProposalMapper proposalMapper;
+    @Mock
+    private NegotiationRuleRepository ruleRepository;
+    @Mock
+    private NegotiationEngine negotiationEngine;
 
     @InjectMocks
     private ProposalService proposalService;
@@ -88,6 +97,7 @@ class ProposalServiceTest {
             p.setId(200L);
             return p;
         });
+        when(ruleRepository.findBySupplierIdAndProductId(anyLong(), anyLong())).thenReturn(Optional.empty());
         when(proposalMapper.toResponse(any(Proposal.class))).thenReturn(expectedResponse);
 
         ProposalResponse result = proposalService.createBuyerProposal(100L, 2L, request);
