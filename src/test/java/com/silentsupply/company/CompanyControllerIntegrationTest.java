@@ -3,11 +3,15 @@ package com.silentsupply.company;
 import com.silentsupply.company.dto.CompanyRequest;
 import com.silentsupply.company.dto.CompanyResponse;
 import com.silentsupply.config.IntegrationTestBase;
+import com.silentsupply.config.dto.AuthResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -87,54 +91,86 @@ class CompanyControllerIntegrationTest extends IntegrationTestBase {
 
     @Test
     void getById_withExistingCompany_returns200() {
-        CompanyRequest request = CompanyRequest.builder()
-                .name("BuyerCo")
-                .email("buyer@example.com")
-                .password("password123")
-                .role(CompanyRole.BUYER)
-                .build();
+        String token = registerAndGetToken("buyer@example.com", "password123", CompanyRole.BUYER, "BuyerCo");
 
+        // Find the created company's ID
+        CompanyRequest request = CompanyRequest.builder()
+                .name("SupplierCo")
+                .email("supplier@example.com")
+                .password("password123")
+                .role(CompanyRole.SUPPLIER)
+                .build();
         ResponseEntity<CompanyResponse> created = restTemplate.postForEntity(
                 "/api/companies", request, CompanyResponse.class);
         Long id = created.getBody().getId();
 
-        ResponseEntity<CompanyResponse> response = restTemplate.getForEntity(
-                "/api/companies/" + id, CompanyResponse.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<CompanyResponse> response = restTemplate.exchange(
+                "/api/companies/" + id, HttpMethod.GET, entity, CompanyResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getName()).isEqualTo("BuyerCo");
+        assertThat(response.getBody().getName()).isEqualTo("SupplierCo");
     }
 
     @Test
     void getById_withNonExistingId_returns404() {
-        ResponseEntity<String> response = restTemplate.getForEntity(
-                "/api/companies/99999", String.class);
+        String token = registerAndGetToken("auth@example.com", "password123", CompanyRole.SUPPLIER, "AuthCo");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                "/api/companies/99999", HttpMethod.GET, entity, String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
     void listAll_returnsAllRegisteredCompanies() {
-        CompanyRequest supplier = CompanyRequest.builder()
-                .name("SupplierCo")
-                .email("supplier@example.com")
-                .password("password123")
-                .role(CompanyRole.SUPPLIER)
-                .build();
+        String token = registerAndGetToken("supplier@example.com", "password123", CompanyRole.SUPPLIER, "SupplierCo");
+
         CompanyRequest buyer = CompanyRequest.builder()
                 .name("BuyerCo")
                 .email("buyer2@example.com")
                 .password("password123")
                 .role(CompanyRole.BUYER)
                 .build();
-
-        restTemplate.postForEntity("/api/companies", supplier, CompanyResponse.class);
         restTemplate.postForEntity("/api/companies", buyer, CompanyResponse.class);
 
-        ResponseEntity<CompanyResponse[]> response = restTemplate.getForEntity(
-                "/api/companies", CompanyResponse[].class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<CompanyResponse[]> response = restTemplate.exchange(
+                "/api/companies", HttpMethod.GET, entity, CompanyResponse[].class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).hasSize(2);
+    }
+
+    /**
+     * Registers a company via the auth endpoint and returns the JWT token.
+     *
+     * @param email    the email to register with
+     * @param password the password
+     * @param role     the company role
+     * @param name     the company name
+     * @return the JWT token
+     */
+    private String registerAndGetToken(String email, String password, CompanyRole role, String name) {
+        CompanyRequest request = CompanyRequest.builder()
+                .name(name)
+                .email(email)
+                .password(password)
+                .role(role)
+                .build();
+        ResponseEntity<AuthResponse> authResponse = restTemplate.postForEntity(
+                "/api/auth/register", request, AuthResponse.class);
+        assertThat(authResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        return authResponse.getBody().getToken();
     }
 }
