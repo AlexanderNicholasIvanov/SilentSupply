@@ -50,10 +50,12 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("SUPPLIER")
                 .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("SUPPLIER")
                 .requestMatchers("/api/suppliers/*/negotiation-rules/**").hasRole("SUPPLIER")
+                .requestMatchers("/api/analytics/supplier").hasRole("SUPPLIER")
                 // Buyer-only endpoints
                 .requestMatchers(HttpMethod.POST, "/api/orders").hasRole("BUYER")
                 .requestMatchers(HttpMethod.POST, "/api/rfqs").hasRole("BUYER")
                 .requestMatchers(HttpMethod.POST, "/api/rfqs/*/proposals").hasRole("BUYER")
+                .requestMatchers("/api/analytics/buyer").hasRole("BUYER")
                 // All authenticated
                 .anyRequest().authenticated()
             )

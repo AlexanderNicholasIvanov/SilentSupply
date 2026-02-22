@@ -107,4 +107,17 @@ public class OpenApiConfig {
                 .pathsToMatch("/api/companies/**")
                 .build();
     }
+
+    /**
+     * Groups analytics dashboard endpoints.
+     *
+     * @return the grouped API definition for analytics
+     */
+    @Bean
+    public GroupedOpenApi analyticsApi() {
+        return GroupedOpenApi.builder()
+                .group("6-analytics")
+                .pathsToMatch("/api/analytics/**")
+                .build();
+    }
 }
