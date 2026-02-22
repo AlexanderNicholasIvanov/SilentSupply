@@ -5,6 +5,7 @@ import com.silentsupply.common.exception.BusinessRuleException;
 import com.silentsupply.common.exception.ResourceNotFoundException;
 import com.silentsupply.company.Company;
 import com.silentsupply.company.CompanyRepository;
+import com.silentsupply.currency.Currency;
 import com.silentsupply.negotiation.dto.NegotiationRuleRequest;
 import com.silentsupply.negotiation.dto.NegotiationRuleResponse;
 import com.silentsupply.product.Product;
@@ -61,6 +62,9 @@ public class NegotiationRuleService {
         NegotiationRule rule = ruleMapper.toEntity(request);
         rule.setSupplier(supplier);
         rule.setProduct(product);
+        if (rule.getCurrency() == null) {
+            rule.setCurrency(Currency.USD);
+        }
 
         NegotiationRule saved = ruleRepository.save(rule);
         return ruleMapper.toResponse(saved);
@@ -87,7 +91,11 @@ public class NegotiationRuleService {
             throw new BusinessRuleException("Price floor must not exceed auto-accept threshold");
         }
 
+        Currency existingCurrency = rule.getCurrency();
         ruleMapper.updateEntity(request, rule);
+        if (rule.getCurrency() == null) {
+            rule.setCurrency(existingCurrency);
+        }
         NegotiationRule saved = ruleRepository.save(rule);
         return ruleMapper.toResponse(saved);
     }

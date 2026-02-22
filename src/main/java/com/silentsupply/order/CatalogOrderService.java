@@ -82,6 +82,7 @@ public class CatalogOrderService {
                 .unitPrice(product.getBasePrice())
                 .totalPrice(totalPrice)
                 .status(OrderStatus.PLACED)
+                .currency(product.getCurrency())
                 .build();
 
         CatalogOrder saved = orderRepository.save(order);

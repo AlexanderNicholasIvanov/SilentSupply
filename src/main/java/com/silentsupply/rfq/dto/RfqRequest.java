@@ -1,5 +1,6 @@
 package com.silentsupply.rfq.dto;
 
+import com.silentsupply.currency.Currency;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -41,4 +42,7 @@ public class RfqRequest {
 
     /** Optional notes for the supplier. */
     private String notes;
+
+    /** Currency for prices (defaults to USD if not specified). */
+    private Currency currency;
 }

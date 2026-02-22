@@ -1,5 +1,6 @@
 package com.silentsupply.negotiation.dto;
 
+import com.silentsupply.currency.Currency;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -46,6 +47,9 @@ public class NegotiationRuleResponse {
 
     /** Minimum quantity for volume discount. */
     private int volumeThreshold;
+
+    /** Currency for prices. */
+    private Currency currency;
 
     /** When the rule was created. */
     private LocalDateTime createdAt;

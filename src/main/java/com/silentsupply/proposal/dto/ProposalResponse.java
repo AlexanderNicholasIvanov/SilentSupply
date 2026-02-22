@@ -1,5 +1,6 @@
 package com.silentsupply.proposal.dto;
 
+import com.silentsupply.currency.Currency;
 import com.silentsupply.proposal.ProposalStatus;
 import com.silentsupply.proposal.ProposerType;
 import lombok.AllArgsConstructor;
@@ -45,6 +46,9 @@ public class ProposalResponse {
 
     /** Reason code for rejection or counter. */
     private String reasonCode;
+
+    /** Currency for prices. */
+    private Currency currency;
 
     /** When the proposal was created. */
     private LocalDateTime createdAt;

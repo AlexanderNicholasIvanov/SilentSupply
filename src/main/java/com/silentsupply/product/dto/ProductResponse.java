@@ -1,5 +1,6 @@
 package com.silentsupply.product.dto;
 
+import com.silentsupply.currency.Currency;
 import com.silentsupply.product.ProductStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,6 +51,9 @@ public class ProductResponse {
 
     /** Current listing status. */
     private ProductStatus status;
+
+    /** Currency for prices. */
+    private Currency currency;
 
     /** When the product was created. */
     private LocalDateTime createdAt;

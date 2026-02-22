@@ -2,6 +2,7 @@ package com.silentsupply.rfq;
 
 import com.silentsupply.common.entity.BaseEntity;
 import com.silentsupply.company.Company;
+import com.silentsupply.currency.Currency;
 import com.silentsupply.product.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -82,4 +83,10 @@ public class Rfq extends BaseEntity {
     /** When this RFQ expires. */
     @Column(name = "expires_at", nullable = false)
     private LocalDateTime expiresAt;
+
+    /** Currency for prices. */
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 3)
+    @Builder.Default
+    private Currency currency = Currency.USD;
 }

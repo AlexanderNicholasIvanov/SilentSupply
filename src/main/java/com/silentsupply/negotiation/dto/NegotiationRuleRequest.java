@@ -1,5 +1,6 @@
 package com.silentsupply.negotiation.dto;
 
+import com.silentsupply.currency.Currency;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -56,4 +57,7 @@ public class NegotiationRuleRequest {
     @NotNull(message = "Volume threshold is required")
     @PositiveOrZero(message = "Volume threshold must not be negative")
     private Integer volumeThreshold;
+
+    /** Currency for prices (defaults to USD if not specified). */
+    private Currency currency;
 }

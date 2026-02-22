@@ -1,5 +1,6 @@
 package com.silentsupply.order.dto;
 
+import com.silentsupply.currency.Currency;
 import com.silentsupply.order.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,6 +51,9 @@ public class OrderResponse {
 
     /** Current order status. */
     private OrderStatus status;
+
+    /** Currency for prices. */
+    private Currency currency;
 
     /** When the order was placed. */
     private LocalDateTime createdAt;

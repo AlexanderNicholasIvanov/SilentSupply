@@ -2,6 +2,7 @@ package com.silentsupply.product;
 
 import com.silentsupply.common.entity.BaseEntity;
 import com.silentsupply.company.Company;
+import com.silentsupply.currency.Currency;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -67,4 +68,10 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     @Builder.Default
     private ProductStatus status = ProductStatus.ACTIVE;
+
+    /** Currency for prices. */
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 3)
+    @Builder.Default
+    private Currency currency = Currency.USD;
 }

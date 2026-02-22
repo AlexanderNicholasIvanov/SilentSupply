@@ -2,6 +2,7 @@ package com.silentsupply.order;
 
 import com.silentsupply.common.entity.BaseEntity;
 import com.silentsupply.company.Company;
+import com.silentsupply.currency.Currency;
 import com.silentsupply.product.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -63,4 +64,10 @@ public class CatalogOrder extends BaseEntity {
     @Column(nullable = false)
     @Builder.Default
     private OrderStatus status = OrderStatus.PLACED;
+
+    /** Currency for prices. */
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 3)
+    @Builder.Default
+    private Currency currency = Currency.USD;
 }

@@ -59,6 +59,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                 // Authenticated endpoints
                 .requestMatchers("/api/attachments/**").authenticated()
                 .requestMatchers("/api/notifications/**").authenticated()
+                .requestMatchers("/api/exchange-rates/**").authenticated()
                 // All other authenticated
                 .anyRequest().authenticated()
             )

@@ -1,6 +1,7 @@
 package com.silentsupply.proposal;
 
 import com.silentsupply.common.entity.BaseEntity;
+import com.silentsupply.currency.Currency;
 import com.silentsupply.rfq.Rfq;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -66,4 +67,10 @@ public class Proposal extends BaseEntity {
     /** Reason code for rejection or counter (e.g., "PRICE_BELOW_FLOOR"). */
     @Column(name = "reason_code")
     private String reasonCode;
+
+    /** Currency for prices. */
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 3)
+    @Builder.Default
+    private Currency currency = Currency.USD;
 }

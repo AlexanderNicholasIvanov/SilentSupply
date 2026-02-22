@@ -6,6 +6,7 @@ import com.silentsupply.company.Company;
 import com.silentsupply.company.CompanyRepository;
 import com.silentsupply.product.dto.ProductRequest;
 import com.silentsupply.product.dto.ProductResponse;
+import com.silentsupply.currency.Currency;
 import com.silentsupply.product.dto.ProductSearchCriteria;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,9 @@ public class ProductService {
 
         Product product = productMapper.toEntity(request);
         product.setSupplier(supplier);
+        if (product.getCurrency() == null) {
+            product.setCurrency(Currency.USD);
+        }
 
         Product saved = productRepository.save(product);
         return productMapper.toResponse(saved);
@@ -71,7 +75,11 @@ public class ProductService {
         Product product = findProductOrThrow(productId);
         verifyOwnership(product, supplierId);
 
+        Currency existingCurrency = product.getCurrency();
         productMapper.updateEntity(request, product);
+        if (product.getCurrency() == null) {
+            product.setCurrency(existingCurrency);
+        }
         Product saved = productRepository.save(product);
         return productMapper.toResponse(saved);
     }

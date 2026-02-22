@@ -2,6 +2,8 @@ package com.silentsupply.negotiation;
 
 import com.silentsupply.company.Company;
 import com.silentsupply.company.CompanyRole;
+import com.silentsupply.currency.Currency;
+import com.silentsupply.currency.CurrencyService;
 import com.silentsupply.product.Product;
 import com.silentsupply.product.ProductStatus;
 import com.silentsupply.proposal.Proposal;
@@ -11,20 +13,34 @@ import com.silentsupply.rfq.Rfq;
 import com.silentsupply.rfq.RfqStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link NegotiationEngine}.
  * Tests all outcomes: auto-accept, auto-counter, auto-reject, max rounds, and volume discounts.
  */
+@ExtendWith(MockitoExtension.class)
 class NegotiationEngineTest {
 
+    @Mock
+    private CurrencyService currencyService;
+
+    @InjectMocks
     private NegotiationEngine engine;
+
     private NegotiationRule rule;
     private Rfq rfq;
     private Company supplier;
@@ -33,7 +49,9 @@ class NegotiationEngineTest {
 
     @BeforeEach
     void setUp() {
-        engine = new NegotiationEngine();
+        // Same-currency conversions return the original amount (lenient — not all tests trigger conversion)
+        lenient().when(currencyService.convert(any(BigDecimal.class), eq(Currency.USD), eq(Currency.USD)))
+                .thenAnswer(inv -> inv.getArgument(0));
 
         supplier = Company.builder().name("SupplierCo").email("s@s.com").password("p").role(CompanyRole.SUPPLIER).build();
         supplier.setId(1L);

@@ -1,5 +1,6 @@
 package com.silentsupply.product.dto;
 
+import com.silentsupply.currency.Currency;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -53,4 +54,7 @@ public class ProductRequest {
     @NotNull(message = "Available quantity is required")
     @PositiveOrZero(message = "Available quantity must not be negative")
     private Integer availableQuantity;
+
+    /** Currency for prices (defaults to USD if not specified). */
+    private Currency currency;
 }

@@ -81,6 +81,7 @@ public class ProposalService {
                 .proposedPrice(request.getProposedPrice())
                 .proposedQty(request.getProposedQty())
                 .deliveryDays(request.getDeliveryDays())
+                .currency(rfq.getCurrency())
                 .status(ProposalStatus.PENDING)
                 .roundNumber(nextRound)
                 .build();
@@ -147,6 +148,7 @@ public class ProposalService {
                         .proposedPrice(result.getCounterPrice())
                         .proposedQty(result.getCounterQty())
                         .deliveryDays(result.getCounterDeliveryDays())
+                        .currency(rfq.getCurrency())
                         .status(ProposalStatus.PENDING)
                         .roundNumber(rfq.getCurrentRound())
                         .reasonCode("AUTO_COUNTERED")

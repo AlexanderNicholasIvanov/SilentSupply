@@ -1,5 +1,6 @@
 package com.silentsupply.rfq.dto;
 
+import com.silentsupply.currency.Currency;
 import com.silentsupply.rfq.RfqStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,6 +64,9 @@ public class RfqResponse {
 
     /** Expiration timestamp. */
     private LocalDateTime expiresAt;
+
+    /** Currency for prices. */
+    private Currency currency;
 
     /** When the RFQ was created. */
     private LocalDateTime createdAt;

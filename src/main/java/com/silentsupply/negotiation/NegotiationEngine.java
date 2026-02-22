@@ -1,8 +1,10 @@
 package com.silentsupply.negotiation;
 
+import com.silentsupply.currency.CurrencyService;
 import com.silentsupply.proposal.Proposal;
 import com.silentsupply.proposal.ProposalStatus;
 import com.silentsupply.rfq.Rfq;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +27,11 @@ import java.math.RoundingMode;
  * reducing the effective price floor and auto-accept threshold accordingly.
  */
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class NegotiationEngine {
+
+    private final CurrencyService currencyService;
 
     /**
      * Evaluates a buyer proposal against supplier-defined negotiation rules.
@@ -53,8 +58,12 @@ public class NegotiationEngine {
         BigDecimal effectiveThreshold = calculateEffectivePrice(
                 rule.getAutoAcceptThreshold(), proposal.getProposedQty(), rule);
 
-        boolean priceAcceptable = proposal.getProposedPrice().compareTo(effectiveThreshold) >= 0;
-        boolean priceNegotiable = proposal.getProposedPrice().compareTo(effectiveFloor) >= 0;
+        // Convert proposal price to rule's currency for comparison
+        BigDecimal proposalPriceInRuleCurrency = currencyService.convert(
+                proposal.getProposedPrice(), proposal.getCurrency(), rule.getCurrency());
+
+        boolean priceAcceptable = proposalPriceInRuleCurrency.compareTo(effectiveThreshold) >= 0;
+        boolean priceNegotiable = proposalPriceInRuleCurrency.compareTo(effectiveFloor) >= 0;
         boolean deliveryAcceptable = proposal.getDeliveryDays() <= rule.getMaxDeliveryDays();
 
         if (!deliveryAcceptable) {
@@ -81,12 +90,14 @@ public class NegotiationEngine {
                     .build();
         }
 
-        BigDecimal counterPrice = effectiveThreshold;
+        // Convert counter price back to proposal's currency
+        BigDecimal counterPriceInProposalCurrency = currencyService.convert(
+                effectiveThreshold, rule.getCurrency(), proposal.getCurrency());
         return NegotiationResult.builder()
                 .buyerProposalStatus(ProposalStatus.COUNTERED)
                 .reasonCode("AUTO_COUNTERED")
                 .counterGenerated(true)
-                .counterPrice(counterPrice)
+                .counterPrice(counterPriceInProposalCurrency)
                 .counterQty(proposal.getProposedQty())
                 .counterDeliveryDays(Math.min(proposal.getDeliveryDays(), rule.getMaxDeliveryDays()))
                 .build();

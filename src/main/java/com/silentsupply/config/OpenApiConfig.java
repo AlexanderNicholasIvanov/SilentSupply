@@ -146,4 +146,17 @@ public class OpenApiConfig {
                 .pathsToMatch("/api/notifications/**")
                 .build();
     }
+
+    /**
+     * Groups exchange rate endpoints.
+     *
+     * @return the grouped API definition for exchange rates
+     */
+    @Bean
+    public GroupedOpenApi exchangeRatesApi() {
+        return GroupedOpenApi.builder()
+                .group("9-exchange-rates")
+                .pathsToMatch("/api/exchange-rates/**")
+                .build();
+    }
 }

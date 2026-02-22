@@ -3,6 +3,7 @@ package com.silentsupply.rfq;
 import com.silentsupply.common.exception.BusinessRuleException;
 import com.silentsupply.common.exception.ResourceNotFoundException;
 import com.silentsupply.company.Company;
+import com.silentsupply.currency.Currency;
 import com.silentsupply.company.CompanyRepository;
 import com.silentsupply.notification.NotificationService;
 import com.silentsupply.product.Product;
@@ -61,6 +62,7 @@ public class RfqService {
                 .targetPrice(request.getTargetPrice())
                 .deliveryDeadline(request.getDeliveryDeadline())
                 .notes(request.getNotes())
+                .currency(request.getCurrency() != null ? request.getCurrency() : Currency.USD)
                 .status(RfqStatus.SUBMITTED)
                 .currentRound(0)
                 .maxRounds(3)

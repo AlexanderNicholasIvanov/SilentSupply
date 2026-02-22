@@ -2,9 +2,12 @@ package com.silentsupply.negotiation;
 
 import com.silentsupply.common.entity.BaseEntity;
 import com.silentsupply.company.Company;
+import com.silentsupply.currency.Currency;
 import com.silentsupply.product.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -66,4 +69,10 @@ public class NegotiationRule extends BaseEntity {
     @Column(name = "volume_threshold", nullable = false)
     @Builder.Default
     private int volumeThreshold = 0;
+
+    /** Currency for prices. */
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 3)
+    @Builder.Default
+    private Currency currency = Currency.USD;
 }
