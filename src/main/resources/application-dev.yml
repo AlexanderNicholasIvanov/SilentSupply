@@ -6,6 +6,10 @@ spring:
   jpa:
     show-sql: true
 
+app:
+  cors:
+    allowed-origins: http://localhost:5173
+
 logging:
   level:
     com.silentsupply: DEBUG

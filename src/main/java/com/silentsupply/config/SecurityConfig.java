@@ -13,8 +13,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Spring Security configuration. Enables JWT-based stateless authentication
@@ -24,7 +22,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
-public class SecurityConfig implements WebMvcConfigurer {
+public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -45,6 +43,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/companies").permitAll()
                 .requestMatchers("/", "/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/ws/**").permitAll()
                 // Supplier-only endpoints
                 .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("SUPPLIER")
                 .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("SUPPLIER")
@@ -60,22 +59,13 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .requestMatchers("/api/attachments/**").authenticated()
                 .requestMatchers("/api/notifications/**").authenticated()
                 .requestMatchers("/api/exchange-rates/**").authenticated()
+                .requestMatchers("/api/messages/**").authenticated()
                 // All other authenticated
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    /**
-     * Redirects the root path to Swagger UI for convenience.
-     *
-     * @param registry the view controller registry
-     */
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addRedirectViewController("/", "/swagger-ui.html");
     }
 
     /**

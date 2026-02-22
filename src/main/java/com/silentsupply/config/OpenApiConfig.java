@@ -159,4 +159,17 @@ public class OpenApiConfig {
                 .pathsToMatch("/api/exchange-rates/**")
                 .build();
     }
+
+    /**
+     * Groups messaging endpoints.
+     *
+     * @return the grouped API definition for messages
+     */
+    @Bean
+    public GroupedOpenApi messagesApi() {
+        return GroupedOpenApi.builder()
+                .group("10-messages")
+                .pathsToMatch("/api/messages/**")
+                .build();
+    }
 }
