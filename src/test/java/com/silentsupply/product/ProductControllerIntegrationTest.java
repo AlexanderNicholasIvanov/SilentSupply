@@ -2,6 +2,7 @@ package com.silentsupply.product;
 
 import com.silentsupply.company.CompanyRepository;
 import com.silentsupply.company.CompanyRole;
+import com.silentsupply.notification.NotificationRepository;
 import com.silentsupply.company.dto.CompanyRequest;
 import com.silentsupply.config.IntegrationTestBase;
 import com.silentsupply.config.dto.AuthResponse;
@@ -40,11 +41,15 @@ class ProductControllerIntegrationTest extends IntegrationTestBase {
     @Autowired
     private CompanyRepository companyRepository;
 
+    @Autowired
+    private NotificationRepository notificationRepository;
+
     private String supplierToken;
     private String buyerToken;
 
     @BeforeEach
     void setUp() {
+        notificationRepository.deleteAll();
         productRepository.deleteAll();
         companyRepository.deleteAll();
 

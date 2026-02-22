@@ -2,6 +2,7 @@ package com.silentsupply.rfq;
 
 import com.silentsupply.company.CompanyRepository;
 import com.silentsupply.company.CompanyRole;
+import com.silentsupply.notification.NotificationRepository;
 import com.silentsupply.company.dto.CompanyRequest;
 import com.silentsupply.config.IntegrationTestBase;
 import com.silentsupply.config.dto.AuthResponse;
@@ -46,12 +47,16 @@ class RfqControllerIntegrationTest extends IntegrationTestBase {
     @Autowired
     private CompanyRepository companyRepository;
 
+    @Autowired
+    private NotificationRepository notificationRepository;
+
     private String supplierToken;
     private String buyerToken;
     private Long productId;
 
     @BeforeEach
     void setUp() {
+        notificationRepository.deleteAll();
         rfqRepository.deleteAll();
         productRepository.deleteAll();
         companyRepository.deleteAll();

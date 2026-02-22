@@ -5,6 +5,7 @@ import com.silentsupply.common.exception.ResourceNotFoundException;
 import com.silentsupply.company.Company;
 import com.silentsupply.company.CompanyRepository;
 import com.silentsupply.company.CompanyRole;
+import com.silentsupply.notification.NotificationService;
 import com.silentsupply.product.Product;
 import com.silentsupply.product.ProductRepository;
 import com.silentsupply.product.ProductStatus;
@@ -43,6 +44,8 @@ class RfqServiceTest {
     private CompanyRepository companyRepository;
     @Mock
     private RfqMapper rfqMapper;
+    @Mock
+    private NotificationService notificationService;
 
     @InjectMocks
     private RfqService rfqService;

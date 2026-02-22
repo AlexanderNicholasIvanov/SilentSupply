@@ -5,6 +5,7 @@ import com.silentsupply.company.Company;
 import com.silentsupply.company.CompanyRole;
 import com.silentsupply.negotiation.NegotiationEngine;
 import com.silentsupply.negotiation.NegotiationRuleRepository;
+import com.silentsupply.notification.NotificationService;
 import com.silentsupply.product.Product;
 import com.silentsupply.product.ProductStatus;
 import com.silentsupply.proposal.dto.ProposalRequest;
@@ -51,6 +52,8 @@ class ProposalServiceTest {
     private NegotiationRuleRepository ruleRepository;
     @Mock
     private NegotiationEngine negotiationEngine;
+    @Mock
+    private NotificationService notificationService;
 
     @InjectMocks
     private ProposalService proposalService;

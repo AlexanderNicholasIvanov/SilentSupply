@@ -2,6 +2,7 @@ package com.silentsupply.negotiation;
 
 import com.silentsupply.company.CompanyRepository;
 import com.silentsupply.company.CompanyRole;
+import com.silentsupply.notification.NotificationRepository;
 import com.silentsupply.company.dto.CompanyRequest;
 import com.silentsupply.config.IntegrationTestBase;
 import com.silentsupply.config.dto.AuthResponse;
@@ -59,6 +60,8 @@ class NegotiationIntegrationTest extends IntegrationTestBase {
     private ProductRepository productRepository;
     @Autowired
     private CompanyRepository companyRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     private String supplierToken;
     private String buyerToken;
@@ -67,6 +70,7 @@ class NegotiationIntegrationTest extends IntegrationTestBase {
 
     @BeforeEach
     void setUp() {
+        notificationRepository.deleteAll();
         proposalRepository.deleteAll();
         rfqRepository.deleteAll();
         ruleRepository.deleteAll();

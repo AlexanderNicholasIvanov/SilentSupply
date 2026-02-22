@@ -4,6 +4,7 @@ import com.silentsupply.common.exception.BusinessRuleException;
 import com.silentsupply.common.exception.ResourceNotFoundException;
 import com.silentsupply.company.Company;
 import com.silentsupply.company.CompanyRepository;
+import com.silentsupply.notification.NotificationService;
 import com.silentsupply.product.Product;
 import com.silentsupply.product.ProductRepository;
 import com.silentsupply.product.ProductStatus;
@@ -30,6 +31,7 @@ public class RfqService {
     private final ProductRepository productRepository;
     private final CompanyRepository companyRepository;
     private final RfqMapper rfqMapper;
+    private final NotificationService notificationService;
 
     /**
      * Submits a new RFQ for a product. Only buyers can submit RFQs.
@@ -66,6 +68,7 @@ public class RfqService {
                 .build();
 
         Rfq saved = rfqRepository.save(rfq);
+        notificationService.notifyRfqSubmitted(saved);
         return rfqMapper.toResponse(saved);
     }
 

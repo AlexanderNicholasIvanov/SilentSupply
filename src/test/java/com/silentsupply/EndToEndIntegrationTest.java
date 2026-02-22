@@ -2,6 +2,7 @@ package com.silentsupply;
 
 import com.silentsupply.attachment.AttachmentRepository;
 import com.silentsupply.company.CompanyRepository;
+import com.silentsupply.notification.NotificationRepository;
 import com.silentsupply.company.CompanyRole;
 import com.silentsupply.company.dto.CompanyRequest;
 import com.silentsupply.config.IntegrationTestBase;
@@ -77,9 +78,12 @@ class EndToEndIntegrationTest extends IntegrationTestBase {
     private ProductRepository productRepository;
     @Autowired
     private CompanyRepository companyRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @BeforeEach
     void cleanAll() {
+        notificationRepository.deleteAll();
         attachmentRepository.deleteAll();
         proposalRepository.deleteAll();
         rfqRepository.deleteAll();

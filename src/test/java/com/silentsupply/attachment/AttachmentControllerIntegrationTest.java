@@ -3,6 +3,7 @@ package com.silentsupply.attachment;
 import com.silentsupply.attachment.dto.AttachmentResponse;
 import com.silentsupply.company.CompanyRepository;
 import com.silentsupply.company.CompanyRole;
+import com.silentsupply.notification.NotificationRepository;
 import com.silentsupply.company.dto.CompanyRequest;
 import com.silentsupply.config.IntegrationTestBase;
 import com.silentsupply.config.dto.AuthResponse;
@@ -60,12 +61,16 @@ class AttachmentControllerIntegrationTest extends IntegrationTestBase {
     @Autowired
     private RfqRepository rfqRepository;
 
+    @Autowired
+    private NotificationRepository notificationRepository;
+
     private String supplierToken;
     private String buyerToken;
     private Long productId;
 
     @BeforeEach
     void setUp() {
+        notificationRepository.deleteAll();
         attachmentRepository.deleteAll();
         proposalRepository.deleteAll();
         rfqRepository.deleteAll();

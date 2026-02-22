@@ -4,6 +4,7 @@ import com.silentsupply.analytics.dto.BuyerDashboardResponse;
 import com.silentsupply.analytics.dto.SupplierDashboardResponse;
 import com.silentsupply.company.CompanyRepository;
 import com.silentsupply.company.CompanyRole;
+import com.silentsupply.notification.NotificationRepository;
 import com.silentsupply.company.dto.CompanyRequest;
 import com.silentsupply.config.IntegrationTestBase;
 import com.silentsupply.config.dto.AuthResponse;
@@ -56,11 +57,15 @@ class AnalyticsControllerIntegrationTest extends IntegrationTestBase {
     @Autowired
     private RfqRepository rfqRepository;
 
+    @Autowired
+    private NotificationRepository notificationRepository;
+
     private String supplierToken;
     private String buyerToken;
 
     @BeforeEach
     void setUp() {
+        notificationRepository.deleteAll();
         proposalRepository.deleteAll();
         rfqRepository.deleteAll();
         orderRepository.deleteAll();

@@ -8,6 +8,7 @@ import com.silentsupply.company.CompanyRole;
 import com.silentsupply.order.dto.OrderRequest;
 import com.silentsupply.order.dto.OrderResponse;
 import com.silentsupply.product.Product;
+import com.silentsupply.notification.NotificationService;
 import com.silentsupply.product.ProductRepository;
 import com.silentsupply.product.ProductStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +42,8 @@ class CatalogOrderServiceTest {
     private CompanyRepository companyRepository;
     @Mock
     private CatalogOrderMapper orderMapper;
+    @Mock
+    private NotificationService notificationService;
 
     @InjectMocks
     private CatalogOrderService orderService;

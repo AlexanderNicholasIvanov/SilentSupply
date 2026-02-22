@@ -3,6 +3,7 @@ package com.silentsupply.company;
 import com.silentsupply.company.dto.CompanyRequest;
 import com.silentsupply.company.dto.CompanyResponse;
 import com.silentsupply.config.IntegrationTestBase;
+import com.silentsupply.notification.NotificationRepository;
 import com.silentsupply.config.dto.AuthResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,8 +33,12 @@ class CompanyControllerIntegrationTest extends IntegrationTestBase {
     @Autowired
     private CompanyRepository companyRepository;
 
+    @Autowired
+    private NotificationRepository notificationRepository;
+
     @BeforeEach
     void cleanUp() {
+        notificationRepository.deleteAll();
         companyRepository.deleteAll();
     }
 

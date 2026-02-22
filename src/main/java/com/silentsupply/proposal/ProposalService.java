@@ -5,6 +5,7 @@ import com.silentsupply.negotiation.NegotiationEngine;
 import com.silentsupply.negotiation.NegotiationResult;
 import com.silentsupply.negotiation.NegotiationRule;
 import com.silentsupply.negotiation.NegotiationRuleRepository;
+import com.silentsupply.notification.NotificationService;
 import com.silentsupply.proposal.dto.ProposalRequest;
 import com.silentsupply.proposal.dto.ProposalResponse;
 import com.silentsupply.rfq.Rfq;
@@ -41,6 +42,7 @@ public class ProposalService {
     private final ProposalMapper proposalMapper;
     private final NegotiationRuleRepository ruleRepository;
     private final NegotiationEngine negotiationEngine;
+    private final NotificationService notificationService;
 
     /**
      * Creates a buyer proposal for an RFQ. If negotiation rules exist for the product,
@@ -88,6 +90,8 @@ public class ProposalService {
         Optional<NegotiationRule> ruleOpt = ruleRepository.findBySupplierIdAndProductId(
                 rfq.getSupplier().getId(), rfq.getProduct().getId());
 
+        notificationService.notifyProposalReceived(rfq);
+
         if (ruleOpt.isPresent()) {
             NegotiationResult result = negotiationEngine.evaluate(savedProposal, rfq, ruleOpt.get());
             applyNegotiationResult(savedProposal, rfq, result);
@@ -124,11 +128,13 @@ public class ProposalService {
             case ACCEPTED -> {
                 rfq.setStatus(RfqStatus.ACCEPTED);
                 rfqRepository.save(rfq);
+                notificationService.notifyNegotiationResolved(rfq, RfqStatus.ACCEPTED);
                 log.info("RFQ {} auto-accepted at round {}", rfq.getId(), rfq.getCurrentRound());
             }
             case REJECTED -> {
                 rfq.setStatus(RfqStatus.REJECTED);
                 rfqRepository.save(rfq);
+                notificationService.notifyNegotiationResolved(rfq, RfqStatus.REJECTED);
                 log.info("RFQ {} auto-rejected: {}", rfq.getId(), result.getReasonCode());
             }
             case COUNTERED -> {

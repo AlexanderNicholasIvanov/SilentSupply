@@ -4,6 +4,7 @@ import com.silentsupply.common.exception.BusinessRuleException;
 import com.silentsupply.common.exception.ResourceNotFoundException;
 import com.silentsupply.company.Company;
 import com.silentsupply.company.CompanyRepository;
+import com.silentsupply.notification.NotificationService;
 import com.silentsupply.order.dto.OrderRequest;
 import com.silentsupply.order.dto.OrderResponse;
 import com.silentsupply.product.Product;
@@ -40,6 +41,7 @@ public class CatalogOrderService {
     private final ProductRepository productRepository;
     private final CompanyRepository companyRepository;
     private final CatalogOrderMapper orderMapper;
+    private final NotificationService notificationService;
 
     /**
      * Places a new catalog order. Validates stock availability and deducts quantity.
@@ -143,6 +145,7 @@ public class CatalogOrderService {
 
         order.setStatus(newStatus);
         CatalogOrder saved = orderRepository.save(order);
+        notificationService.notifyOrderStatusChange(saved, newStatus);
         return orderMapper.toResponse(saved);
     }
 }

@@ -58,6 +58,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .requestMatchers("/api/analytics/buyer").hasRole("BUYER")
                 // Authenticated endpoints
                 .requestMatchers("/api/attachments/**").authenticated()
+                .requestMatchers("/api/notifications/**").authenticated()
                 // All other authenticated
                 .anyRequest().authenticated()
             )

@@ -2,6 +2,7 @@ package com.silentsupply.proposal;
 
 import com.silentsupply.company.CompanyRepository;
 import com.silentsupply.company.CompanyRole;
+import com.silentsupply.notification.NotificationRepository;
 import com.silentsupply.company.dto.CompanyRequest;
 import com.silentsupply.config.IntegrationTestBase;
 import com.silentsupply.config.dto.AuthResponse;
@@ -49,12 +50,16 @@ class ProposalControllerIntegrationTest extends IntegrationTestBase {
     @Autowired
     private CompanyRepository companyRepository;
 
+    @Autowired
+    private NotificationRepository notificationRepository;
+
     private String supplierToken;
     private String buyerToken;
     private Long rfqId;
 
     @BeforeEach
     void setUp() {
+        notificationRepository.deleteAll();
         proposalRepository.deleteAll();
         rfqRepository.deleteAll();
         productRepository.deleteAll();

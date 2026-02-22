@@ -133,4 +133,17 @@ public class OpenApiConfig {
                 .pathsToMatch("/api/attachments/**")
                 .build();
     }
+
+    /**
+     * Groups notification endpoints.
+     *
+     * @return the grouped API definition for notifications
+     */
+    @Bean
+    public GroupedOpenApi notificationsApi() {
+        return GroupedOpenApi.builder()
+                .group("8-notifications")
+                .pathsToMatch("/api/notifications/**")
+                .build();
+    }
 }
