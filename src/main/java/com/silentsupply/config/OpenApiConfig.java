@@ -120,4 +120,17 @@ public class OpenApiConfig {
                 .pathsToMatch("/api/analytics/**")
                 .build();
     }
+
+    /**
+     * Groups file attachment endpoints.
+     *
+     * @return the grouped API definition for attachments
+     */
+    @Bean
+    public GroupedOpenApi attachmentsApi() {
+        return GroupedOpenApi.builder()
+                .group("7-attachments")
+                .pathsToMatch("/api/attachments/**")
+                .build();
+    }
 }

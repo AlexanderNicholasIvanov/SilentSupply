@@ -56,7 +56,9 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .requestMatchers(HttpMethod.POST, "/api/rfqs").hasRole("BUYER")
                 .requestMatchers(HttpMethod.POST, "/api/rfqs/*/proposals").hasRole("BUYER")
                 .requestMatchers("/api/analytics/buyer").hasRole("BUYER")
-                // All authenticated
+                // Authenticated endpoints
+                .requestMatchers("/api/attachments/**").authenticated()
+                // All other authenticated
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

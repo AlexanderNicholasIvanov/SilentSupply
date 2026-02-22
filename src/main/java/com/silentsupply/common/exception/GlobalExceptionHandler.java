@@ -101,6 +101,22 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles file storage exceptions.
+     *
+     * @param ex the exception
+     * @return 500 error response
+     */
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<ErrorResponse> handleFileStorage(FileStorageException ex) {
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    /**
      * Catch-all handler for unexpected exceptions.
      *
      * @param ex the exception

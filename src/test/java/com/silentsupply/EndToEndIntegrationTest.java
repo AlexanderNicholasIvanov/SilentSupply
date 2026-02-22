@@ -1,5 +1,6 @@
 package com.silentsupply;
 
+import com.silentsupply.attachment.AttachmentRepository;
 import com.silentsupply.company.CompanyRepository;
 import com.silentsupply.company.CompanyRole;
 import com.silentsupply.company.dto.CompanyRequest;
@@ -63,6 +64,8 @@ class EndToEndIntegrationTest extends IntegrationTestBase {
     private TestRestTemplate restTemplate;
 
     @Autowired
+    private AttachmentRepository attachmentRepository;
+    @Autowired
     private ProposalRepository proposalRepository;
     @Autowired
     private RfqRepository rfqRepository;
@@ -77,6 +80,7 @@ class EndToEndIntegrationTest extends IntegrationTestBase {
 
     @BeforeEach
     void cleanAll() {
+        attachmentRepository.deleteAll();
         proposalRepository.deleteAll();
         rfqRepository.deleteAll();
         ruleRepository.deleteAll();
