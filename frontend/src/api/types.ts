@@ -69,8 +69,9 @@ export interface SupplierAnalytics {
   totalProducts: number
   totalRevenue: number
   totalOrdersReceived: number
-  avgOrderValue: number
+  averageOrderValue: number
   negotiationSuccessRate: number
+  totalRfqs: number
   revenueByProduct: ProductRevenue[]
   ordersByStatus: Record<string, number>
 }
@@ -78,8 +79,9 @@ export interface SupplierAnalytics {
 export interface BuyerAnalytics {
   totalOrdersPlaced: number
   totalSpend: number
-  avgOrderValue: number
+  averageOrderValue: number
   rfqSuccessRate: number
+  totalRfqs: number
   ordersByStatus: Record<string, number>
 }
 

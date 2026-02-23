@@ -53,12 +53,12 @@ export default function DashboardPage() {
             <StatCard label="Total Products" value={supplierData.totalProducts} />
             <StatCard
               label="Total Revenue"
-              value={`$${supplierData.totalRevenue.toLocaleString()}`}
+              value={`$${(supplierData.totalRevenue ?? 0).toLocaleString()}`}
             />
             <StatCard label="Orders Received" value={supplierData.totalOrdersReceived} />
             <StatCard
               label="Avg Order Value"
-              value={`$${supplierData.avgOrderValue.toFixed(2)}`}
+              value={`$${(supplierData.averageOrderValue ?? 0).toFixed(2)}`}
             />
           </div>
 
@@ -66,7 +66,7 @@ export default function DashboardPage() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h3 className="font-semibold mb-4">Negotiation Success Rate</h3>
               <p className="text-3xl font-bold text-green-600">
-                {supplierData.negotiationSuccessRate.toFixed(1)}%
+                {(supplierData.negotiationSuccessRate ?? 0).toFixed(1)}%
               </p>
             </div>
 
@@ -106,11 +106,11 @@ export default function DashboardPage() {
             <StatCard label="Orders Placed" value={buyerData.totalOrdersPlaced} />
             <StatCard
               label="Total Spend"
-              value={`$${buyerData.totalSpend.toLocaleString()}`}
+              value={`$${(buyerData.totalSpend ?? 0).toLocaleString()}`}
             />
             <StatCard
               label="Avg Order Value"
-              value={`$${buyerData.avgOrderValue.toFixed(2)}`}
+              value={`$${(buyerData.averageOrderValue ?? 0).toFixed(2)}`}
             />
             <StatCard label="Unread Messages" value={unreadMessages} />
           </div>
@@ -119,7 +119,7 @@ export default function DashboardPage() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h3 className="font-semibold mb-4">RFQ Success Rate</h3>
               <p className="text-3xl font-bold text-green-600">
-                {buyerData.rfqSuccessRate.toFixed(1)}%
+                {(buyerData.rfqSuccessRate ?? 0).toFixed(1)}%
               </p>
             </div>
 

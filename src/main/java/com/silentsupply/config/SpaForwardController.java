@@ -10,17 +10,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class SpaForwardController {
 
+    /** Regex that matches a path segment without dots, excluding backend prefixes. */
+    private static final String SEG = "(?!api$|ws$|swagger-ui$|api-docs$)[^\\.]*";
+
     /**
-     * Forwards all non-API paths to the SPA's index.html.
-     * This allows React Router to handle client-side routes like /messages, /login, etc.
-     * Paths with file extensions (e.g., .js, .css) are excluded so static assets load normally.
+     * Forwards SPA routes to index.html for client-side routing.
+     * Excludes backend paths (api, ws, swagger-ui, api-docs) and paths with file
+     * extensions (.js, .css, etc.) so they are handled by their respective controllers.
      *
      * @return forward to index.html
      */
     @GetMapping(value = {
-            "/{path:[^\\.]*}",
-            "/{path1:[^\\.]*}/{path2:[^\\.]*}",
-            "/{path1:[^\\.]*}/{path2:[^\\.]*}/{path3:[^\\.]*}"
+            "/{path:" + SEG + "}",
+            "/{path1:" + SEG + "}/{path2:[^\\.]*}",
+            "/{path1:" + SEG + "}/{path2:[^\\.]*}/{path3:[^\\.]*}"
     })
     public String forward() {
         return "forward:/index.html";

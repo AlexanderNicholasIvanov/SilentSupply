@@ -62,5 +62,12 @@ export function useMessages(conversationId: number | null) {
     apiClient<void>(`/api/messages/conversations/${conversationId}/read`, { method: 'PATCH' }).catch(() => {})
   }, [conversationId, messages.length])
 
-  return { messages, loading, hasMore, loadMore }
+  const addMessage = useCallback((message: MessageResponse) => {
+    setMessages((prev) => {
+      if (prev.some((m) => m.id === message.id)) return prev
+      return [...prev, message]
+    })
+  }, [])
+
+  return { messages, loading, hasMore, loadMore, addMessage }
 }

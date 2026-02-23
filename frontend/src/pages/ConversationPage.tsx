@@ -34,7 +34,7 @@ export default function ConversationPage() {
   const navigate = useNavigate()
   const { companyId } = useAuth()
   const conversationId = id ? Number(id) : null
-  const { messages, loading, hasMore, loadMore } = useMessages(conversationId)
+  const { messages, loading, hasMore, loadMore, addMessage } = useMessages(conversationId)
   const { sendMessage, sending } = useChat()
   const [input, setInput] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -53,7 +53,8 @@ export default function ConversationPage() {
     setInput('')
 
     try {
-      await sendMessage({ conversationId, content })
+      const msg = await sendMessage({ conversationId, content })
+      addMessage(msg)
     } catch {
       setInput(content) // Restore on error
     }
