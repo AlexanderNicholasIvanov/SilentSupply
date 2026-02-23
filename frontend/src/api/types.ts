@@ -113,3 +113,58 @@ export interface PageResponse<T> {
   first: boolean
   last: boolean
 }
+
+export type ProductStatus = 'ACTIVE' | 'OUT_OF_STOCK' | 'DISCONTINUED'
+
+export interface ProductResponse {
+  id: number
+  supplierId: number
+  supplierName: string
+  name: string
+  description: string | null
+  category: string
+  sku: string
+  unitOfMeasure: string
+  basePrice: number
+  availableQuantity: number
+  status: ProductStatus
+  currency: string
+  createdAt: string
+}
+
+export interface ProductRequest {
+  name: string
+  description?: string
+  category: string
+  sku: string
+  unitOfMeasure: string
+  basePrice: number
+  availableQuantity: number
+  currency?: string
+}
+
+export interface ProductSearchParams {
+  name?: string
+  category?: string
+  minPrice?: number
+  maxPrice?: number
+  status?: ProductStatus
+}
+
+export type OrderStatus = 'PLACED' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED'
+
+export interface OrderResponse {
+  id: number
+  buyerId: number
+  buyerName: string
+  productId: number
+  productName: string
+  supplierId: number
+  supplierName: string
+  quantity: number
+  unitPrice: number
+  totalPrice: number
+  status: OrderStatus
+  currency: string
+  createdAt: string
+}

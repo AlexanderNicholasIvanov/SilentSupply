@@ -1,13 +1,16 @@
+import { Link } from 'react-router-dom'
 import { useDashboard } from '../hooks/useDashboard'
 
-function StatCard({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
-  return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+function StatCard({ label, value, sub, to }: { label: string; value: string | number; sub?: string; to?: string }) {
+  const content = (
+    <div className={`bg-white rounded-xl shadow-sm border border-gray-200 p-6${to ? ' hover:border-blue-300 transition-colors' : ''}`}>
       <p className="text-sm text-gray-500">{label}</p>
       <p className="text-2xl font-bold mt-1">{value}</p>
       {sub && <p className="text-xs text-gray-400 mt-1">{sub}</p>}
     </div>
   )
+  if (to) return <Link to={to}>{content}</Link>
+  return content
 }
 
 function OrderStatusTable({ data }: { data: Record<string, number> }) {
@@ -17,10 +20,14 @@ function OrderStatusTable({ data }: { data: Record<string, number> }) {
   return (
     <div className="space-y-2">
       {entries.map(([status, count]) => (
-        <div key={status} className="flex justify-between items-center">
+        <Link
+          key={status}
+          to={`/orders?status=${status}`}
+          className="flex justify-between items-center hover:bg-gray-50 rounded px-1 -mx-1 py-0.5 transition-colors"
+        >
           <span className="text-sm text-gray-600">{status.replace(/_/g, ' ')}</span>
           <span className="text-sm font-medium bg-gray-100 px-2 py-0.5 rounded">{count}</span>
-        </div>
+        </Link>
       ))}
     </div>
   )
@@ -55,7 +62,7 @@ export default function DashboardPage() {
               label="Total Revenue"
               value={`$${(supplierData.totalRevenue ?? 0).toLocaleString()}`}
             />
-            <StatCard label="Orders Received" value={supplierData.totalOrdersReceived} />
+            <StatCard label="Orders Received" value={supplierData.totalOrdersReceived} to="/orders" />
             <StatCard
               label="Avg Order Value"
               value={`$${(supplierData.averageOrderValue ?? 0).toFixed(2)}`}
@@ -75,10 +82,10 @@ export default function DashboardPage() {
               <OrderStatusTable data={supplierData.ordersByStatus} />
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <Link to="/messages" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 block hover:border-blue-300 transition-colors">
               <h3 className="font-semibold mb-4">Unread Messages</h3>
               <p className="text-3xl font-bold text-blue-600">{unreadMessages}</p>
-            </div>
+            </Link>
 
             {supplierData.revenueByProduct.length > 0 && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:col-span-2 lg:col-span-3">
@@ -103,7 +110,7 @@ export default function DashboardPage() {
       {role === 'BUYER' && buyerData && (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <StatCard label="Orders Placed" value={buyerData.totalOrdersPlaced} />
+            <StatCard label="Orders Placed" value={buyerData.totalOrdersPlaced} to="/orders" />
             <StatCard
               label="Total Spend"
               value={`$${(buyerData.totalSpend ?? 0).toLocaleString()}`}
@@ -112,7 +119,7 @@ export default function DashboardPage() {
               label="Avg Order Value"
               value={`$${(buyerData.averageOrderValue ?? 0).toFixed(2)}`}
             />
-            <StatCard label="Unread Messages" value={unreadMessages} />
+            <StatCard label="Unread Messages" value={unreadMessages} to="/messages" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
