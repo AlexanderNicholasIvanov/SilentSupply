@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useConversations } from '../hooks/useConversations'
 import { useChat } from '../hooks/useChat'
 import { useAuth } from '../contexts/AuthContext'
@@ -61,6 +61,7 @@ export default function MessagesPage() {
   const { sendMessage } = useChat()
   const { role } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [showNew, setShowNew] = useState(false)
   const [recipientId, setRecipientId] = useState('')
   const [subject, setSubject] = useState('')
@@ -89,6 +90,18 @@ export default function MessagesPage() {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
+
+  // Pre-fill from "Contact Supplier" navigation
+  useEffect(() => {
+    const state = location.state as { recipientId?: number; subject?: string } | null
+    if (state?.recipientId) {
+      setRecipientId(String(state.recipientId))
+      if (state.subject) setSubject(state.subject)
+      setShowNew(true)
+      // Clear location state so it doesn't re-trigger
+      navigate(location.pathname, { replace: true, state: null })
+    }
+  }, [location.state, navigate, location.pathname])
 
   const filteredCompanies = companies.filter((c) =>
     c.name.toLowerCase().includes(companySearch.toLowerCase())
