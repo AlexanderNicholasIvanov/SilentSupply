@@ -165,7 +165,7 @@ public class MessagingService {
 
         // Case 3: Direct conversation
         if (request.getRecipientCompanyId() != null) {
-            return findOrCreateDirectConversation(sender, request.getRecipientCompanyId());
+            return findOrCreateDirectConversation(sender, request.getRecipientCompanyId(), request.getSubject());
         }
 
         throw new BusinessRuleException(
@@ -216,8 +216,13 @@ public class MessagingService {
 
     /**
      * Finds or creates a direct conversation between two companies.
+     *
+     * @param sender      the sending company
+     * @param recipientId the recipient company ID
+     * @param subject     optional subject for the conversation (only used when creating)
+     * @return the existing or newly created conversation
      */
-    private Conversation findOrCreateDirectConversation(Company sender, Long recipientId) {
+    private Conversation findOrCreateDirectConversation(Company sender, Long recipientId, String subject) {
         if (sender.getId().equals(recipientId)) {
             throw new BusinessRuleException("Cannot start a conversation with yourself");
         }
@@ -230,13 +235,55 @@ public class MessagingService {
                 .orElseGet(() -> {
                     Conversation conversation = Conversation.builder()
                             .type(ConversationType.DIRECT)
-                            .subject(null)
+                            .subject(subject)
                             .build();
                     Conversation saved = conversationRepository.save(conversation);
                     addParticipant(saved, sender);
                     addParticipant(saved, recipient);
                     return saved;
                 });
+    }
+
+    /**
+     * Gets a single conversation's details for the given company.
+     *
+     * @param conversationId the conversation ID
+     * @param companyId      the requesting company's ID
+     * @return the conversation response
+     */
+    public ConversationResponse getConversationDetails(Long conversationId, Long companyId) {
+        Conversation conversation = conversationRepository.findById(conversationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Conversation", "id", conversationId));
+
+        if (!participantRepository.existsByConversationIdAndCompanyId(conversationId, companyId)) {
+            throw new AccessDeniedException("You are not a participant in this conversation");
+        }
+
+        return toConversationResponse(conversation, companyId);
+    }
+
+    /**
+     * Updates the subject of a conversation. Only participants may update.
+     *
+     * @param conversationId the conversation ID
+     * @param companyId      the requesting company's ID
+     * @param subject        the new subject (may be null to clear)
+     * @return the updated conversation response
+     */
+    @Transactional
+    public ConversationResponse updateSubject(Long conversationId, Long companyId, String subject) {
+        Conversation conversation = conversationRepository.findById(conversationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Conversation", "id", conversationId));
+
+        if (!participantRepository.existsByConversationIdAndCompanyId(conversationId, companyId)) {
+            throw new AccessDeniedException("You are not a participant in this conversation");
+        }
+
+        conversation.setSubject(subject);
+        conversationRepository.save(conversation);
+        log.debug("Subject updated for conversation {} by company {}", conversationId, companyId);
+
+        return toConversationResponse(conversation, companyId);
     }
 
     /**

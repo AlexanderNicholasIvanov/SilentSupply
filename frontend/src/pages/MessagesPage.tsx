@@ -6,6 +6,16 @@ import { useAuth } from '../contexts/AuthContext'
 import { apiClient } from '../api/client'
 import type { CompanyResponse, ConversationResponse } from '../api/types'
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/[\s]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 60)
+}
+
 function ConversationItem({ conversation, onClick }: { conversation: ConversationResponse; onClick: () => void }) {
   const otherParticipants = conversation.participants
     .map((p) => p.companyName)
@@ -53,6 +63,7 @@ export default function MessagesPage() {
   const navigate = useNavigate()
   const [showNew, setShowNew] = useState(false)
   const [recipientId, setRecipientId] = useState('')
+  const [subject, setSubject] = useState('')
   const [newMessage, setNewMessage] = useState('')
   const [filter, setFilter] = useState<string>('ALL')
   const [companies, setCompanies] = useState<CompanyResponse[]>([])
@@ -93,15 +104,19 @@ export default function MessagesPage() {
     e.preventDefault()
     if (!recipientId || !newMessage.trim()) return
     try {
+      const trimmedSubject = subject.trim() || undefined
       const response = await sendMessage({
         recipientCompanyId: Number(recipientId),
+        subject: trimmedSubject,
         content: newMessage.trim(),
       })
       setShowNew(false)
       setRecipientId('')
+      setSubject('')
       setNewMessage('')
       setCompanySearch('')
-      navigate(`/messages/${response.conversationId}`)
+      const slug = trimmedSubject ? '/' + slugify(trimmedSubject) : ''
+      navigate(`/messages/${response.conversationId}${slug}`)
     } catch {
       // Error handled by useChat
     }
@@ -169,6 +184,17 @@ export default function MessagesPage() {
             )}
           </div>
           <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Subject (optional)</label>
+            <input
+              type="text"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              maxLength={255}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+              placeholder="e.g. Bulk order inquiry"
+            />
+          </div>
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
             <textarea
               value={newMessage}
@@ -214,7 +240,10 @@ export default function MessagesPage() {
             <ConversationItem
               key={conv.id}
               conversation={conv}
-              onClick={() => navigate(`/messages/${conv.id}`)}
+              onClick={() => {
+                const slug = conv.subject ? '/' + slugify(conv.subject) : ''
+                navigate(`/messages/${conv.id}${slug}`)
+              }}
             />
           ))
         )}

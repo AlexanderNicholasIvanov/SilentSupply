@@ -33,6 +33,10 @@ public class SendMessageRequest {
     /** Recipient company ID for direct conversations. */
     private Long recipientCompanyId;
 
+    /** Optional subject line for the conversation. */
+    @Size(max = 255, message = "Subject must not exceed 255 characters")
+    private String subject;
+
     /** The message content. */
     @NotBlank(message = "Message content is required")
     @Size(max = 10000, message = "Message must not exceed 10000 characters")

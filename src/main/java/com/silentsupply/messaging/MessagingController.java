@@ -84,6 +84,39 @@ public class MessagingController {
     }
 
     /**
+     * Gets a single conversation's details.
+     *
+     * @param userDetails the authenticated user
+     * @param id          the conversation ID
+     * @return the conversation details
+     */
+    @GetMapping("/conversations/{id}/details")
+    @Operation(summary = "Get conversation details")
+    public ResponseEntity<ConversationResponse> getConversationDetails(
+            @AuthenticationPrincipal CompanyUserDetails userDetails,
+            @PathVariable Long id) {
+        return ResponseEntity.ok(messagingService.getConversationDetails(id, userDetails.getId()));
+    }
+
+    /**
+     * Updates the subject of a conversation.
+     *
+     * @param userDetails the authenticated user
+     * @param id          the conversation ID
+     * @param body        map containing the new "subject" value
+     * @return the updated conversation
+     */
+    @PatchMapping("/conversations/{id}/subject")
+    @Operation(summary = "Update conversation subject")
+    public ResponseEntity<ConversationResponse> updateSubject(
+            @AuthenticationPrincipal CompanyUserDetails userDetails,
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body) {
+        String subject = body.get("subject");
+        return ResponseEntity.ok(messagingService.updateSubject(id, userDetails.getId(), subject));
+    }
+
+    /**
      * Marks a conversation as read for the authenticated company.
      *
      * @param userDetails the authenticated user

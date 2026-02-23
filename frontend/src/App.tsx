@@ -25,7 +25,7 @@ export default function App() {
       >
         <Route path="/" element={<DashboardPage />} />
         <Route path="/messages" element={<MessagesPage />} />
-        <Route path="/messages/:id" element={<ConversationPage />} />
+        <Route path="/messages/:id/*" element={<ConversationPage />} />
       </Route>
     </Routes>
   )

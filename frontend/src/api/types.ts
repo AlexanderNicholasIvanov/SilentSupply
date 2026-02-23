@@ -62,6 +62,7 @@ export interface SendMessageRequest {
   referenceType?: 'DIRECT' | 'RFQ' | 'ORDER'
   referenceId?: number
   recipientCompanyId?: number
+  subject?: string
   content: string
 }
 
