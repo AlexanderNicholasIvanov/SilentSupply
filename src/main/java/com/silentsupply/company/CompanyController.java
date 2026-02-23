@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -54,13 +55,18 @@ public class CompanyController {
     }
 
     /**
-     * Lists all registered companies.
+     * Lists companies, optionally filtered by role.
      *
-     * @return list of all companies
+     * @param role optional role filter (SUPPLIER or BUYER)
+     * @return list of companies matching the filter, or all companies if no filter
      */
     @GetMapping
-    @Operation(summary = "List all companies")
-    public ResponseEntity<List<CompanyResponse>> listAll() {
+    @Operation(summary = "List companies, optionally filtered by role")
+    public ResponseEntity<List<CompanyResponse>> listAll(
+            @RequestParam(required = false) CompanyRole role) {
+        if (role != null) {
+            return ResponseEntity.ok(companyService.listByRole(role));
+        }
         return ResponseEntity.ok(companyService.listAll());
     }
 }

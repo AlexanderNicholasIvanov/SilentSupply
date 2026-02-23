@@ -66,4 +66,16 @@ public class CompanyService {
                 .map(companyMapper::toResponse)
                 .toList();
     }
+
+    /**
+     * Lists companies filtered by role.
+     *
+     * @param role the role to filter by
+     * @return list of company response DTOs matching the role
+     */
+    public List<CompanyResponse> listByRole(CompanyRole role) {
+        return companyRepository.findByRole(role).stream()
+                .map(companyMapper::toResponse)
+                .toList();
+    }
 }

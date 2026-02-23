@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useConversations } from '../hooks/useConversations'
 import { useChat } from '../hooks/useChat'
-import type { ConversationResponse } from '../api/types'
+import { useAuth } from '../contexts/AuthContext'
+import { apiClient } from '../api/client'
+import type { CompanyResponse, ConversationResponse } from '../api/types'
 
 function ConversationItem({ conversation, onClick }: { conversation: ConversationResponse; onClick: () => void }) {
   const otherParticipants = conversation.participants
@@ -47,11 +49,41 @@ function ConversationItem({ conversation, onClick }: { conversation: Conversatio
 export default function MessagesPage() {
   const { conversations, loading, error } = useConversations()
   const { sendMessage } = useChat()
+  const { role } = useAuth()
   const navigate = useNavigate()
   const [showNew, setShowNew] = useState(false)
   const [recipientId, setRecipientId] = useState('')
   const [newMessage, setNewMessage] = useState('')
   const [filter, setFilter] = useState<string>('ALL')
+  const [companies, setCompanies] = useState<CompanyResponse[]>([])
+  const [companySearch, setCompanySearch] = useState('')
+  const [showDropdown, setShowDropdown] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (showNew && role) {
+      const oppositeRole = role === 'BUYER' ? 'SUPPLIER' : 'BUYER'
+      apiClient<CompanyResponse[]>(`/api/companies?role=${oppositeRole}`)
+        .then(setCompanies)
+        .catch(() => setCompanies([]))
+    }
+  }, [showNew, role])
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowDropdown(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const filteredCompanies = companies.filter((c) =>
+    c.name.toLowerCase().includes(companySearch.toLowerCase())
+  )
+
+  const selectedCompany = companies.find((c) => c.id === Number(recipientId))
 
   const filtered = filter === 'ALL'
     ? conversations
@@ -68,6 +100,7 @@ export default function MessagesPage() {
       setShowNew(false)
       setRecipientId('')
       setNewMessage('')
+      setCompanySearch('')
       navigate(`/messages/${response.conversationId}`)
     } catch {
       // Error handled by useChat
@@ -96,16 +129,44 @@ export default function MessagesPage() {
 
       {showNew && (
         <form onSubmit={handleNewConversation} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 space-y-3">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Recipient Company ID</label>
+          <div ref={dropdownRef} className="relative">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Recipient</label>
             <input
-              type="number"
-              value={recipientId}
-              onChange={(e) => setRecipientId(e.target.value)}
-              required
+              type="text"
+              value={selectedCompany ? selectedCompany.name : companySearch}
+              onChange={(e) => {
+                setCompanySearch(e.target.value)
+                setRecipientId('')
+                setShowDropdown(true)
+              }}
+              onFocus={() => setShowDropdown(true)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
-              placeholder="Enter company ID"
+              placeholder="Search for a company..."
             />
+            <input type="hidden" name="recipientId" value={recipientId} required />
+            {showDropdown && (
+              <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                {filteredCompanies.length === 0 ? (
+                  <div className="px-3 py-2 text-sm text-gray-400">No companies found</div>
+                ) : (
+                  filteredCompanies.map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => {
+                        setRecipientId(String(c.id))
+                        setCompanySearch('')
+                        setShowDropdown(false)
+                      }}
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-blue-50 flex justify-between items-center"
+                    >
+                      <span className="font-medium">{c.name}</span>
+                      <span className="text-xs text-gray-400">{c.role}</span>
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>

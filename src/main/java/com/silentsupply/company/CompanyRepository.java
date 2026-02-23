@@ -3,6 +3,7 @@ package com.silentsupply.company;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,4 +27,12 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
      * @return true if a company with this email exists
      */
     boolean existsByEmail(String email);
+
+    /**
+     * Finds all companies with the given role.
+     *
+     * @param role the company role to filter by
+     * @return list of companies with the specified role
+     */
+    List<Company> findByRole(CompanyRole role);
 }

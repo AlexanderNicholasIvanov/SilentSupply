@@ -19,6 +19,17 @@ export interface LoginRequest {
   password: string
 }
 
+export interface CompanyResponse {
+  id: number
+  name: string
+  email: string
+  role: 'SUPPLIER' | 'BUYER'
+  contactPhone: string | null
+  address: string | null
+  verified: boolean
+  createdAt: string
+}
+
 export interface ConversationResponse {
   id: number
   type: 'DIRECT' | 'RFQ' | 'ORDER'
